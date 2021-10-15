@@ -1,39 +1,31 @@
- 
-
 from pathlib import Path
+from uploading_to_excel import upload_to_excel
+from create_dictionary_from_sheet_string import create_dictionary_from_sheet_string
+from process_document_text import process_text
+from choosing_files import return_lists_for_filepath_and_filestem
+# Take file, prcoess, and create and print dictionary.
 
 
+# path of folder that contains the word documents.
+folder_path = Path(r'C:\Users\brennan.ukrainetz\Desktop\Mail Merge Project Temporary Folders\TAKE1')
+file_paths, file_stems = return_lists_for_filepath_and_filestem(folder_path)
+# print(file_stems)
 
+list_of_dictionaries = []
+for file_path in file_paths:
+    haystack =  process_text(file_path)
+    # print(haystack)
+    dictionary = create_dictionary_from_sheet_string(haystack)
+    list_of_dictionaries.append(dictionary)
 
+upload_to_excel(list_of_dictionaries,file_stems)
 
-
-# regex help documents: https://docs.python.org/3/howto/regex.html and https://docs.python.org/3/library/re.html#match-objects
-# Look for module level functions for ones where creating an object is not required.
-
-folder_path = Path(r'C:\Users\brennan.ukrainetz\Desktop\Mail Merge Project Temporary Folders\Mail MergeTEST Files')
-
-
-
-# Loop through all the title names in the folder and only retrieve the cal sheets, not the cover sheets or templates. (Warning: There are a few templates such as TT- template and RTD 1-element templates that have a dash in their names.)
-file_list = []
-for file in folder_path.glob('*-*.docx'):
-    print(file.stem)
-    file_list.append(file.stem.upper()) #makes sure all words are capitalized anyways.
-print(file_list)
-
-for title_of_doc_without_extension in file_list:
-    if ("TE" or "TI") in title_of_doc_without_extension:
-        instrument_type = "RTD"
-    elif "T-" in title_of_doc_without_extension:
-        instrument_type = "TRANSMITTER"
-    elif "V-" in title_of_doc_without_extension:
-        instrument_type = "VALVE"
-    elif title_of_doc_without_extension.startswith("LS"):
-        instrument_type = "LS_SWITCH"
-    elif title_of_doc_without_extension.startswith("P") and ("S" in title_of_doc_without_extension):
-        instrument_type = "PS_SWITCH"
-    print(instrument_type)
-
+# Testing excel and dictionary together
+# file_path = r"C:\Users\brennan.ukrainetz\Desktop\Mail Merge Project Temporary Folders\Mail MergeTEST Filesfile_stemsdocx"
+# haystack =  process_text(file_path)
+# dictionary = create_dictionary_from_sheet_string(haystack)
+# list_of_dicts = [dictionary]
+# upload_to_excel(list_of_dicts,"PT-2685")
 
 
 
